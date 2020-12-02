@@ -63,12 +63,9 @@ python library/src/main/python/decode.py -i mini.hprof -o target.hprof
 ```
 ## Support
 
-邮件: <a href="mailto:shentianzhou.stz@gmail.com">shentianzhou.stz@gmail.com</a>
-
-微信: 429013449
-
-微信交流群:
-<img src=images/wechat.png/>
+1. 在[GitHub issues](https://github.com/bytedance/tailor/issues)上交流
+2. 邮件: <a href="mailto:shentianzhou.stz@gmail.com">shentianzhou.stz@gmail.com</a>
+3. 微信: 429013449
 
 ## License
 ~~~
