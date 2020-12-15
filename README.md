@@ -19,16 +19,15 @@ complete, which is very suitable for offline analysis of oom and other exception
 
 ## Get started
 
-Add to your build.gradle:
-
+Step1: Add to your build.gradle:
 ```gradle
 implementation 'com.bytedance.tailor:library:1.0.1'
 ```
 
-For simple usage:
+Step2: For simple usage:
 
 ```java
-// Using Tailor to get a mini hprof file in the exception callback
+// Using Tailor to get a mini hprof file in exception callback
 Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
     @Override
     public void uncaughtException(Thread t, Throwable e) {
@@ -47,10 +46,14 @@ Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() 
 Tailor.cropHprofData(source, target, true);
 ```
 
-Data recovery:
-
+Step3: File upload:
 ```shell
-python library/src/main/python/decode.py -i mini.hprof -o target.hprof
+App needs to implement upload logic by itself
+```
+
+Step4: Data recovery:
+```shell
+python3 library/src/main/python/decode.py -i mini.hprof -o target.hprof
 ```
 
 ## Extra
@@ -60,13 +63,13 @@ and compression, we provide three script implementations
 
 ```shell
 // Hprof verify
-python library/src/main/python/verify.py -i source.hprof
+python3 library/src/main/python/verify.py -i source.hprof
 
 // Crop and compress
-python library/src/main/python/encode.py -i source.hprof -o mini.hprof
+python3 library/src/main/python/encode.py -i source.hprof -o mini.hprof
 
 // Data recovery
-python library/src/main/python/decode.py -i mini.hprof -o target.hprof
+python3 library/src/main/python/decode.py -i mini.hprof -o target.hprof
 ```
 ## Support
 

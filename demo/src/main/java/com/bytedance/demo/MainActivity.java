@@ -11,10 +11,9 @@ import android.view.View;
 
 import com.bytedance.tailor.Tailor;
 
-import java.io.RandomAccessFile;
-
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     static final String DIRECTORY = Environment.getExternalStorageDirectory().getAbsolutePath();
+
     @Override
     protected void onCreate(Bundle state) {
         super.onCreate(state);
@@ -22,7 +21,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn).setOnClickListener(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if(!(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)){
+            if (!(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)) {
                 String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
                 requestPermissions(permissions, 101);
             }
@@ -40,8 +39,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String source = DIRECTORY + "/0.hprof";
             String target = DIRECTORY + "/1.hprof";
             Debug.dumpHprofData(source);
-            System.err.println("TAILOR: isHprofValid = " + isHprofValid(source));
-            if (isHprofValid(source)) {
+            System.err.println("TAILOR: isHprofValid = " + Tailor.isHprofValid(source));
+            if (Tailor.isHprofValid(source)) {
                 Tailor.cropHprofData(source, target, true);
             }
         } catch (Exception e) {
@@ -55,16 +54,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Tailor.dumpHprofData(target, true);
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    boolean isHprofValid(String path) {
-        try {
-            RandomAccessFile file = new RandomAccessFile(path, "r");
-            file.seek(file.length() - 9);
-            return file.readByte() == 0x2C;
-        } catch (Throwable t) {
-           return false;
         }
     }
 }

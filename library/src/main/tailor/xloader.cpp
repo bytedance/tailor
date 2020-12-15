@@ -113,13 +113,13 @@ void crop_hprof(JNIEnv* env, jobject obj, jstring source, jstring target, bool g
 
 static const JNINativeMethod sMethods[] = {
         {
-				"nOpen",
-				"(Ljava/lang/String;Z)V",
-				(void *) open_tailor
+                "nOpen",
+                "(Ljava/lang/String;Z)V",
+                (void *) open_tailor
         }, {
-				"nClose",
-				"()V",
-				(void *) close_tailor
+                "nClose",
+                "()V",
+                (void *) close_tailor
 		}, {
                 "nCrop",
                 "(Ljava/lang/String;Ljava/lang/String;Z)V",

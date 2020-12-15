@@ -1,3 +1,4 @@
+# coding=utf-8
 #!/usr/bin/python
 
 #
@@ -24,12 +25,12 @@ counter = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 
 def decode(reader, writer):
-	writer.write('JAVA PROFILE 1.0.3')
+	writer.write(bytearray([ord(c) for c in 'JAVA PROFILE 1.0.3']))
 	writer.write(bytearray([0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]))
 
 	length = os.path.getsize(reader.name)
 	while reader.tell() < length:
-		tag = int(reader.read(1).encode('hex'), 16)
+		tag = int.from_bytes(reader.read(1), byteorder='big', signed=False)
 		if tag == 0x01:    # STRING
 			decode_STRING(reader, writer)
 		elif tag == 0x02:  # LOAD_CLASS
@@ -66,7 +67,7 @@ def decode_STRING(reader, writer):
 	COUNTER(0)
 	writer.write(bytearray([0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]))
 
-	length = int(reader.read(2).encode('hex'), 16)
+	length = int.from_bytes(reader.read(2), byteorder='big', signed=False)
 	reader.seek(-2, 1)
 
 	writer.write(bytearray(reader.read(2 + length)))
@@ -86,7 +87,7 @@ def decode_HEAP_DUMP_SEGMENT(reader, writer):
 
 	segment_started_index = writer.tell()
 	while True:
-		tag = int(reader.read(1).encode('hex'), 16)
+		tag = int.from_bytes(reader.read(1), byteorder='big', signed=False)
 		reader.seek(-1, 1)
 
 		if tag == 0x01:    # ROOT_JNI_GLOBAL
@@ -211,17 +212,17 @@ def decode_CLASS_DUMP(reader, writer):
 
 	writer.write(bytearray(reader.read(2)))
 
-	constant_fields_count = int(reader.read(2).encode('hex'), 16)
+	constant_fields_count = int.from_bytes(reader.read(2), byteorder='big', signed=False)
 	reader.seek(-2, 1)
 	writer.write(bytearray(reader.read(2)))
 	decode_CLASS_CONSTANT_FIELDS(reader, constant_fields_count, writer)
 
-	static_fields_count = int(reader.read(2).encode('hex'), 16)
+	static_fields_count = int.from_bytes(reader.read(2), byteorder='big', signed=False)
 	reader.seek(-2, 1)
 	writer.write(bytearray(reader.read(2)))
 	decode_CLASS_STATIC_FIELDS(reader, static_fields_count, writer)
 
-	instance_fields_count = int(reader.read(2).encode('hex'), 16)
+	instance_fields_count = int.from_bytes(reader.read(2), byteorder='big', signed=False)
 	reader.seek(-2, 1)
 	writer.write(bytearray(reader.read(2)))
 	decode_CLASS_INSTANCE_FIELDS(reader, instance_fields_count, writer)
@@ -233,7 +234,7 @@ def decode_INSTANCE_DUMP(reader, writer):
 	writer.write(bytearray(4))
 	writer.write(bytearray(reader.read(4)))
 
-	bytes_followed = int(reader.read(4).encode('hex'), 16)
+	bytes_followed = int.from_bytes(reader.read(4), byteorder='big', signed=False)
 	reader.seek(-4, 1)
 	writer.write(bytearray(reader.read(4 + bytes_followed)))
 
@@ -244,7 +245,7 @@ def decode_OBJECT_ARRAY_DUMP(reader, writer):
 
 	writer.write(bytearray(4))
 
-	length = int(reader.read(4).encode('hex'), 16)
+	length = int.from_bytes(reader.read(4), byteorder='big', signed=False)
 	reader.seek(-4, 1)
 
 	writer.write(bytearray(reader.read(8 + 4 * length)))
@@ -256,8 +257,8 @@ def decode_PRIMITIVE_ARRAY_DUMP(reader, writer):
 
 	writer.write(bytearray(4))
 
-	length = int(reader.read(4).encode('hex'), 16)
-	type = int(reader.read(1).encode('hex'), 16)
+	length = int.from_bytes(reader.read(4), byteorder='big', signed=False)
+	type = int.from_bytes(reader.read(1), byteorder='big', signed=False)
 
 	reader.seek(-5, 1)
 	writer.write(bytearray(reader.read(5)))
@@ -326,7 +327,7 @@ def decode_CLASS_CONSTANT_FIELDS(reader, count, writer):
 		count -= 1
 
 		reader.seek(2, 1)
-		type = int(reader.read(1).encode('hex'), 16)
+		type = int.from_bytes(reader.read(1), byteorder='big', signed=False)
 		reader.seek(-3, 1)
 
 		if type >= 12 or type == 3 or type <= 1:
@@ -358,7 +359,7 @@ def decode_CLASS_STATIC_FIELDS(reader, count, writer):
 		count -= 1
 
 		reader.seek(4, 1)
-		type = int(reader.read(1).encode('hex'), 16)
+		type = int.from_bytes(reader.read(1), byteorder='big', signed=False)
 		reader.seek(-5, 1)
 
 		if type >= 12 or type == 3 or type <= 1:
@@ -390,7 +391,7 @@ def decode_CLASS_INSTANCE_FIELDS(reader, count, writer):
 		count -= 1
 
 		reader.seek(4, 1)
-		type = int(reader.read(1).encode('hex'), 16)
+		type = int.from_bytes(reader.read(1), byteorder='big', signed=False)
 		reader.seek(-5, 1)
 
 		if type >= 12 or type == 3 or type <= 1:
@@ -415,16 +416,16 @@ def decompress(reader, writer):
 
 def process(source, target):
 	try:
-		reader = open(source, 'r')
-		writer = open('.tailor', 'w')
+		reader = open(source, 'rb')
+		writer = open('.tailor', 'wb')
 		decompress(reader, writer)
 		reader.close()
 		writer.close()
 
-		reader = open('.tailor', 'r')
-		writer = open(target, 'w')
-		if reader.read(18) == 'JAVA PROFILE 6.0.1':
-		    decode(reader, writer)
+		reader = open('.tailor', 'rb')
+		writer = open(target, 'wb')
+		if reader.read(18).decode('ascii') == 'JAVA PROFILE 6.0.1':
+			decode(reader, writer)
 		else:
 			raise Exception('decode failed, unknown file format !')
 		reader.close()

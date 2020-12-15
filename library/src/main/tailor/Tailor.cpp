@@ -83,13 +83,13 @@ void handle_HEAP_DUMP_SEGMENT(Reader *reader, Writer *writer) {
             SEEK(reader, 4);
             break;
         case HPROF_ROOT_STICKY_CLASS:          // 0x05
-		case HPROF_ROOT_MONITOR_USED:          // 0x07
+        case HPROF_ROOT_MONITOR_USED:          // 0x07
         case HPROF_ROOT_INTERNED_STRING:       // 0x89
         case HPROF_ROOT_DEBUGGER:              // 0x8B
         case HPROF_ROOT_VM_INTERNAL:           // 0x8D
         case HPROF_ROOT_UNKNOWN:               // 0xFF
             MOVE(writer, reader, 5);
-			break;
+            break;
         case HPROF_CLASS_DUMP:                 // 0x20
             handle_CLASS_DUMP(reader, writer);
             break;

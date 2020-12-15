@@ -25,7 +25,7 @@ struct Reader {
 	virtual ~Reader() {}
 	virtual bool isAvailable() = 0;
 
-	char * buffer;
+	char  *buffer;
 	size_t length;
 	size_t offset;
 };
@@ -38,7 +38,7 @@ struct Writer {
 	const char *name;
 	int wrap;
 
-	FILE * target;
+	FILE  *target;
 	char   buffer[LENGTH];
 	size_t offset;
 };

@@ -35,14 +35,14 @@ public class Tailor {
 	}
 
 	public static void cropHprofData(String source, String target, boolean isGzip) throws IOException {
-    	if (isValid(source)) {
+    	if (isHprofValid(source)) {
     		nCrop(source, target, isGzip);
 		} else {
     		throw new IOException("Bad hprof file " + source);
 		}
 	}
 
-	static boolean isValid(String path) {
+	public static boolean isHprofValid(String path) {
 		RandomAccessFile file = null;
 		try {
 			file = new RandomAccessFile(path, "r");

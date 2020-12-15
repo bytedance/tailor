@@ -14,16 +14,14 @@ Tailor是西瓜Android团队开发的一款通用内存快照裁剪压缩工具�
 
 ## Get started
 
-添加依赖：
-
+Step1 添加依赖：
 ```gradle
 implementation 'com.bytedance.tailor:library:1.0.1'
 ```
 
-代码接入：
-
+Step2 代码接入：
 ```Java
-// 在异常回调里通过Tailor获取快照
+// 在异常回调里通过Tailor获取快照，不同的app异常回调接口不同，可以根据app的实际情况调整，Ex：
 Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
     @Override
     public void uncaughtException(Thread t, Throwable e) {
@@ -42,24 +40,29 @@ Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() 
 Tailor.cropHprofData(source, target, true);
 ```
 
-数据还原：
+Step3 数据上传：
+```shell
+应用需自己实现上传逻辑或相应的数据回捞功能
+```
+
+Step4 数据还原：
 ```shell
 // 还原快照文件
-python library/src/main/python/decode.py -i mini.hprof -o target.hprof
+python3 library/src/main/python/decode.py -i mini.hprof -o target.hprof
 ```
 
 ## Extra
 
 为了方便大家理解内存快照的文件格式及裁剪压缩细节，我们提供了三个脚本实现
 ```shell
-// 快照文件解析
-python library/src/main/python/verify.py -i source.hprof
+// 解析验证
+python3 library/src/main/python/verify.py -i source.hprof
 
-// 快照裁剪压缩
-python library/src/main/python/encode.py -i source.hprof -o mini.hprof
+// 裁剪压缩
+python3 library/src/main/python/encode.py -i source.hprof -o mini.hprof
 
-// 快照数据还原
-python library/src/main/python/decode.py -i mini.hprof -o target.hprof
+// 数据还原
+python3 library/src/main/python/decode.py -i mini.hprof -o target.hprof
 ```
 ## Support
 

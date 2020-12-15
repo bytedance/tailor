@@ -60,7 +60,7 @@ LibzWriter::~LibzWriter() {
 int LibzWriter::proxy(int flags) {
     char proxy[256];
     sprintf(proxy, "%s.proxy", name);
-    return (wrap = open(proxy, flags));
+    return wrap = open(proxy, flags);
 }
 
 void LibzWriter::flush(char *buff, size_t count, bool isEof) {
