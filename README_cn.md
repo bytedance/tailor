@@ -47,13 +47,13 @@ Step3 数据上传：
 
 Step4 数据还原：
 ```shell
-// 还原快照文件
+// 还原快照文件（Python version 3.5以上）
 python3 library/src/main/python/decode.py -i mini.hprof -o target.hprof
 ```
 
 ## Extra
 
-为了方便大家理解内存快照的文件格式及裁剪压缩细节，我们提供了三个脚本实现
+为了方便大家理解内存快照的文件格式及裁剪压缩细节，我们提供了三个脚本实现（Python version 3.5以上）
 ```shell
 // 解析验证
 python3 library/src/main/python/verify.py -i source.hprof
@@ -69,6 +69,7 @@ python3 library/src/main/python/decode.py -i mini.hprof -o target.hprof
 1. 在[GitHub issues](https://github.com/bytedance/tailor/issues)上交流
 2. 邮件: <a href="mailto:shentianzhou.stz@gmail.com">shentianzhou.stz@gmail.com</a>
 3. 微信: 429013449
+<p align="left"><img src="images/wechat.jpeg" alt="Wechat group" width="320px"></p>
 
 ## License
 ~~~

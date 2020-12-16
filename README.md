@@ -19,12 +19,12 @@ complete, which is very suitable for offline analysis of oom and other exception
 
 ## Get started
 
-Step1: Add to your build.gradle:
+Step1: Add to your build.gradle
 ```gradle
 implementation 'com.bytedance.tailor:library:1.0.1'
 ```
 
-Step2: For simple usage:
+Step2: For simple usage
 
 ```java
 // Using Tailor to get a mini hprof file in exception callback
@@ -46,12 +46,12 @@ Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() 
 Tailor.cropHprofData(source, target, true);
 ```
 
-Step3: File upload:
+Step3: File upload
 ```shell
 App needs to implement upload logic by itself
 ```
 
-Step4: Data recovery:
+Step4: Data recovery(Python version 3.5 and above)
 ```shell
 python3 library/src/main/python/decode.py -i mini.hprof -o target.hprof
 ```
@@ -59,7 +59,7 @@ python3 library/src/main/python/decode.py -i mini.hprof -o target.hprof
 ## Extra
 
 In order to facilitate everyone to understand the file format of the hprof and the details of cropping
-and compression, we provide three script implementations
+and compression, we provide three script implementations (Python version 3.5 and above)
 
 ```shell
 // Hprof verify
@@ -76,6 +76,7 @@ python3 library/src/main/python/decode.py -i mini.hprof -o target.hprof
 1. Communicate on [GitHub issues](https://github.com/bytedance/tailor/issues)
 2. Mail: <a href="mailto:shentianzhou.stz@gmail.com">shentianzhou.stz@gmail.com</a>
 3. WeChat: 429013449
+<p align="left"><img src="images/wechat.jpeg" alt="Wechat group" width="320px"></p>
 
 ## License
 ~~~

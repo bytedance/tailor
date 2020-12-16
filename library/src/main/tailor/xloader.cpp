@@ -120,7 +120,7 @@ static const JNINativeMethod sMethods[] = {
                 "nClose",
                 "()V",
                 (void *) close_tailor
-		}, {
+        }, {
                 "nCrop",
                 "(Ljava/lang/String;Ljava/lang/String;Z)V",
                 (void *) crop_hprof

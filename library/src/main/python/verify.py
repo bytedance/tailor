@@ -68,7 +68,7 @@ def verify_STRING(reader):
 	LOGGER('STRING', 'timestamp: %d ' % int.from_bytes(reader.read(4), byteorder='big', signed=False))
 	length = int.from_bytes(reader.read(4), byteorder='big', signed=False) - 4
 	LOGGER('STRING', 'length: %d' % length)
-	LOGGER('STRING', 'id: 0x%s ' % reader.read(4).hex())
+	LOGGER('STRING', 'ID for this string: 0x%s ' % reader.read(4).hex())
 	LOGGER('STRING', 'value: %s' % reader.read(length).decode('ascii'))
 
 
@@ -78,9 +78,9 @@ def verify_LOAD_CLASS(reader):
 	LOGGER('LOAD-CLASS', 'timestamp: %d ' % int.from_bytes(reader.read(4), byteorder='big', signed=False))
 	LOGGER('LOAD-CLASS', 'length: %d ' % int.from_bytes(reader.read(4), byteorder='big', signed=False))
 	LOGGER('LOAD-CLASS', 'class serial number: 0x%s ' % reader.read(4).hex())
-	LOGGER('LOAD-CLASS', 'class object id: 0x%s ' % reader.read(4).hex())
+	LOGGER('LOAD-CLASS', 'class object ID: 0x%s ' % reader.read(4).hex())
 	LOGGER('LOAD-CLASS', 'stack trace serial number: 0x%s ' % reader.read(4).hex())
-	LOGGER('LOAD-CLASS', 'class name string id: 0x%s ' % reader.read(4).hex())
+	LOGGER('LOAD-CLASS', 'class name string ID: 0x%s ' % reader.read(4).hex())
 
 
 def verify_STACK_TRACE(reader):
@@ -90,7 +90,10 @@ def verify_STACK_TRACE(reader):
 	LOGGER('STACK-TRACE', 'length: %d ' % int.from_bytes(reader.read(4), byteorder='big', signed=False))
 	LOGGER('STACK-TRACE', 'serial number: 0x%s ' % reader.read(4).hex())
 	LOGGER('STACK-TRACE', 'thread serial number: 0x%s ' % reader.read(4).hex())
-	LOGGER('STACK-TRACE', 'num frames: 0x%s ' % reader.read(4).hex())
+
+	length = int.from_bytes(reader.read(4), byteorder='big', signed=False)
+	LOGGER('STACK-TRACE', 'number of frames: %d ' % length)
+	reader.seek(4 * length, 1)
 
 
 def verify_HEAP_DUMP_SEGMENT(reader):

@@ -85,7 +85,9 @@ def encode_LOAD_CLASS(reader, writer):
 
 def encode_STACK_TRACE(reader, writer):
 	COUNTER(2)
-	reader.seek(20, 1)
+	reader.seek(16, 1)
+	length = int.from_bytes(reader.read(4), byteorder='big', signed=False)
+	reader.seek(4 * length, 1)
 
 
 def encode_HEAP_DUMP_SEGMENT(reader, writer):
