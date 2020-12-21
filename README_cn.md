@@ -16,7 +16,7 @@ Tailor是西瓜Android团队开发的一款通用内存快照裁剪压缩工具�
 
 Step1 添加依赖：
 ```gradle
-implementation 'com.bytedance.tailor:library:1.0.1'
+implementation 'com.bytedance.tailor:library:1.0.2'
 ```
 
 Step2 代码接入：
@@ -38,7 +38,7 @@ Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() 
 ```Java
 // 也可以直接对已经存在的hprof文件裁剪压缩
 Tailor.cropHprofData(source, target, true);
-```
+```g
 
 Step3 数据上传：
 ```shell
