@@ -19,7 +19,7 @@
 import argparse
 import os
 
-counter = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+counter = {}
 
 
 def verify(reader):
@@ -63,7 +63,7 @@ def verify(reader):
 
 
 def verify_STRING(reader):
-	COUNTER(0)
+	COUNTER('STRING')
 	LOGGER('STRING', 'tag: 0x01')
 	LOGGER('STRING', 'timestamp: %d ' % int.from_bytes(reader.read(4), byteorder='big', signed=False))
 	length = int.from_bytes(reader.read(4), byteorder='big', signed=False) - 4
@@ -73,7 +73,7 @@ def verify_STRING(reader):
 
 
 def verify_LOAD_CLASS(reader):
-	COUNTER(1)
+	COUNTER('LOAD_CLASS')
 	LOGGER('LOAD-CLASS', 'tag: 0x02')
 	LOGGER('LOAD-CLASS', 'timestamp: %d ' % int.from_bytes(reader.read(4), byteorder='big', signed=False))
 	LOGGER('LOAD-CLASS', 'length: %d ' % int.from_bytes(reader.read(4), byteorder='big', signed=False))
@@ -84,7 +84,7 @@ def verify_LOAD_CLASS(reader):
 
 
 def verify_STACK_TRACE(reader):
-	COUNTER(2)
+	COUNTER('STACK_TRACE')
 	LOGGER('STACK-TRACE', 'tag: 0x05')
 	LOGGER('STACK-TRACE', 'timestamp: %d ' % int.from_bytes(reader.read(4), byteorder='big', signed=False))
 	LOGGER('STACK-TRACE', 'length: %d ' % int.from_bytes(reader.read(4), byteorder='big', signed=False))
@@ -97,7 +97,7 @@ def verify_STACK_TRACE(reader):
 
 
 def verify_HEAP_DUMP_SEGMENT(reader):
-	COUNTER(3)
+	COUNTER('HEAP_DUMP_SEGMENT')
 	LOGGER('HEAP-DUMP-SEGMENT', 'tag: 0x1C')
 	LOGGER('HEAP-DUMP-SEGMENT', 'timestamp: %d ' % int.from_bytes(reader.read(4), byteorder='big', signed=False))
 
@@ -138,11 +138,11 @@ def verify_HEAP_DUMP_SEGMENT(reader):
 		elif tag == 0x89:  # ROOT_INTERNED_STRING
 			verify_ROOT_INTERNED_STRING(reader)
 		elif tag == 0x8A:  # ROOT_FINALIZING
-			raise Exception('verify_HEAP_DUMP_SEGMENT >>> Not supported tag: %d' % tag)
+			verify_ROOT_FINALIZING(reader)
 		elif tag == 0x8B:  # ROOT_DEBUGGER
 			verify_ROOT_DEBUGGER(reader)
 		elif tag == 0x8C:  # ROOT_REFERENCE_CLEANUP
-			raise Exception('verify_HEAP_DUMP_SEGMENT >>> Not supported tag: %d' % tag)
+			verify_ROOT_REFERENCE_CLEANUP(reader)
 		elif tag == 0x8D:  # ROOT_VM_INTERNAL
 			verify_ROOT_VM_INTERNAL(reader)
 		elif tag == 0x8E:  # ROOT_JNI_MONITOR
@@ -164,19 +164,19 @@ def verify_HEAP_DUMP_END(reader):
 	reader.seek(8, 1)
 
 	global counter
-	print("counter: %s" % counter)
+	print(counter)
 	print('COMPLETE: %d -> %d ' % (reader.tell(), os.path.getsize(reader.name)))
 
 
 def verify_ROOT_JNI_GLOBAL(reader):
-	COUNTER(4)
+	COUNTER('ROOT_JNI_GLOBAL')
 	LOGGER('ROOT-JNI-GLOBAL', 'tag: 0x%s ' % reader.read(1).hex())
 	LOGGER('ROOT-JNI-GLOBAL', 'object ID: 0x%s ' % reader.read(4).hex())
 	LOGGER('ROOT-JNI-GLOBAL', 'JNI global ref ID: 0x%s ' % reader.read(4).hex())
 
 
 def verify_ROOT_JNI_LOCAL(reader):
-	COUNTER(5)
+	COUNTER('ROOT_JNI_LOCAL')
 	LOGGER('ROOT-JNI-LOCAL', 'tag: 0x%s ' % reader.read(1).hex())
 	LOGGER('ROOT-JNI-LOCAL', 'object ID: 0x%s ' % reader.read(4).hex())
 	LOGGER('ROOT-JNI-LOCAL', 'thread serial number: 0x%s ' % reader.read(4).hex())
@@ -184,7 +184,7 @@ def verify_ROOT_JNI_LOCAL(reader):
 
 
 def verify_ROOT_JAVA_FRAME(reader):
-	COUNTER(6)
+	COUNTER('ROOT_JAVA_FRAME')
 	LOGGER('ROOT-JAVA-FRAME', 'tag: 0x%s ' % reader.read(1).hex())
 	LOGGER('ROOT-JAVA-FRAME', 'object ID: 0x%s ' % reader.read(4).hex())
 	LOGGER('ROOT-JAVA-FRAME', 'thread serial number: 0x%s ' % reader.read(4).hex())
@@ -192,33 +192,33 @@ def verify_ROOT_JAVA_FRAME(reader):
 
 
 def verify_ROOT_NATIVE_STACK(reader):
-	COUNTER(7)
+	COUNTER('ROOT_NATIVE_STACK')
 	LOGGER('ROOT-NATIVE-STACK', 'tag: 0x%s ' % reader.read(1).hex())
 	LOGGER('ROOT-NATIVE-STACK', 'object ID: 0x%s ' % reader.read(4).hex())
 	LOGGER('ROOT-NATIVE-STACK', 'thread serial number: 0x%s ' % reader.read(4).hex())
 
 
 def verify_ROOT_STICKY_CLASS(reader):
-	COUNTER(8)
+	COUNTER('ROOT_STICKY_CLASS')
 	LOGGER('ROOT-STICKY-CLASS', 'tag: 0x%s ' % reader.read(1).hex())
 	LOGGER('ROOT-STICKY-CLASS', 'object ID: 0x%s ' % reader.read(4).hex())
 
 
 def verify_ROOT_THREAD_BLOCK(reader):
-	COUNTER(9)
+	COUNTER('ROOT_THREAD_BLOCK')
 	LOGGER('ROOT-THREAD-BLOCK', 'tag: 0x%s ' % reader.read(1).hex())
 	LOGGER('ROOT-THREAD-BLOCK', 'object ID: 0x%s ' % reader.read(4).hex())
 	LOGGER('ROOT-THREAD-BLOCK', 'thread serial number: 0x%s ' % reader.read(4).hex())
 
 
 def verify_ROOT_MONITOR_USED(reader):
-	COUNTER(10)
+	COUNTER('ROOT_MONITOR_USED')
 	LOGGER('ROOT-MONITOR-USED', 'tag: 0x%s ' % reader.read(1).hex())
 	LOGGER('ROOT-MONITOR-USED', 'object ID: 0x%s ' % reader.read(4).hex())
 
 
 def verify_ROOT_THREAD_OBJECT(reader):
-	COUNTER(11)
+	COUNTER('ROOT_THREAD_OBJECT')
 	LOGGER('ROOT-THREAD-OBJECT', 'tag: 0x%s ' % reader.read(1).hex())
 	LOGGER('ROOT-THREAD-OBJECT', 'thread object ID: 0x%s ' % reader.read(4).hex())
 	LOGGER('ROOT-THREAD-OBJECT', 'thread serial number: 0x%s ' % reader.read(4).hex())
@@ -226,7 +226,7 @@ def verify_ROOT_THREAD_OBJECT(reader):
 
 
 def verify_CLASS_DUMP(reader):
-	COUNTER(12)
+	COUNTER('CLASS_DUMP')
 	LOGGER('CLASS-DUMP', 'tag: 0x%s ' % reader.read(1).hex())
 	LOGGER('CLASS-DUMP', 'class object ID: 0x%s ' % reader.read(4).hex())
 	LOGGER('CLASS-DUMP', 'stack trace serial number: 0x%s ' % reader.read(4).hex())
@@ -251,7 +251,7 @@ def verify_CLASS_DUMP(reader):
 
 
 def verify_INSTANCE_DUMP(reader):
-	COUNTER(13)
+	COUNTER('INSTANCE_DUMP')
 	LOGGER('INSTANCE-DUMP', 'tag: 0x%s ' % reader.read(1).hex())
 	LOGGER('INSTANCE-DUMP', 'object ID: 0x%s ' % reader.read(4).hex())
 	LOGGER('INSTANCE-DUMP', 'stack trace serial number: 0x%s ' % reader.read(4).hex())
@@ -263,7 +263,7 @@ def verify_INSTANCE_DUMP(reader):
 
 
 def verify_OBJECT_ARRAY_DUMP(reader):
-	COUNTER(14)
+	COUNTER('OBJECT_ARRAY_DUMP')
 	LOGGER('OBJECT-ARRAY-DUMP', 'tag: 0x%s ' % reader.read(1).hex())
 	LOGGER('OBJECT-ARRAY-DUMP', 'array object ID: 0x%s ' % reader.read(4).hex())
 	LOGGER('OBJECT-ARRAY-DUMP', 'stack trace serial number: 0x%s ' % reader.read(4).hex())
@@ -277,7 +277,7 @@ def verify_OBJECT_ARRAY_DUMP(reader):
 
 
 def verify_PRIMITIVE_ARRAY_DUMP(reader):
-	COUNTER(15)
+	COUNTER('PRIMITIVE_ARRAY_DUMP')
 	LOGGER('PRIMITIVE-ARRAY-DUMP', 'tag: 0x%s ' % reader.read(1).hex())
 	LOGGER('PRIMITIVE-ARRAY-DUMP', 'array object ID: 0x%s ' % reader.read(4).hex())
 	LOGGER('PRIMITIVE-ARRAY-DUMP', 'stack trace serial number: 0x%s ' % reader.read(4).hex())
@@ -292,25 +292,37 @@ def verify_PRIMITIVE_ARRAY_DUMP(reader):
 
 
 def verify_ROOT_INTERNED_STRING(reader):
-	COUNTER(16)
+	COUNTER('ROOT_INTERNED_STRING')
 	LOGGER('ROOT-INTERNED-STRING', 'tag: 0x%s ' % reader.read(1).hex())
 	LOGGER('ROOT-INTERNED-STRING', 'object ID: 0x%s ' % reader.read(4).hex())
 
 
+def verify_ROOT_FINALIZING(reader):
+	COUNTER('ROOT_FINALIZING')
+	LOGGER('ROOT_FINALIZING', 'tag: 0x%s ' % reader.read(1).hex())
+	LOGGER('ROOT_FINALIZING', 'object ID: 0x%s ' % reader.read(4).hex())
+
+
 def verify_ROOT_DEBUGGER(reader):
-	COUNTER(17)
+	COUNTER('ROOT_DEBUGGER')
 	LOGGER('ROOT-DEBUGGER', 'tag: 0x%s ' % reader.read(1).hex())
 	LOGGER('ROOT-DEBUGGER', 'object ID: 0x%s ' % reader.read(4).hex())
 
 
+def verify_ROOT_REFERENCE_CLEANUP(reader):
+	COUNTER('ROOT_REFERENCE_CLEANUP')
+	LOGGER('ROOT_REFERENCE_CLEANUP', 'tag: 0x%s ' % reader.read(1).hex())
+	LOGGER('ROOT_REFERENCE_CLEANUP', 'object ID: 0x%s ' % reader.read(4).hex())
+
+
 def verify_ROOT_VM_INTERNAL(reader):
-	COUNTER(18)
+	COUNTER('ROOT_VM_INTERNAL')
 	LOGGER('ROOT-VM-INTERNAL', 'tag: 0x%s ' % reader.read(1).hex())
 	LOGGER('ROOT-VM-INTERNAL', 'object ID: 0x%s ' % reader.read(4).hex())
 
 
 def verify_ROOT_JNI_MONITOR(reader):
-	COUNTER(19)
+	COUNTER('ROOT_JNI_MONITOR')
 	LOGGER('ROOT-JNI-MONITOR', 'tag: 0x%s ' % reader.read(1).hex())
 	LOGGER('ROOT-JNI-MONITOR', 'string id: 0x%s ' % reader.read(4).hex())
 	LOGGER('ROOT-JNI-MONITOR', 'thread serial number: 0x%s ' % reader.read(4).hex())
@@ -318,14 +330,14 @@ def verify_ROOT_JNI_MONITOR(reader):
 
 
 def verify_HEAP_DUMP_INFO(reader):
-	COUNTER(20)
+	COUNTER('HEAP_DUMP_INFO')
 	LOGGER('HEAP-DUMP-INFO', 'tag: 0x%s ' % reader.read(1).hex())
 	LOGGER('HEAP-DUMP-INFO', 'heap ID: 0x%s ' % reader.read(4).hex())
 	LOGGER('HEAP-DUMP-INFO', 'heap name ID: 0x%s ' % reader.read(4).hex())
 
 
 def verify_ROOT_UNKNOWN(reader):
-	COUNTER(21)
+	COUNTER('ROOT_UNKNOWN')
 	LOGGER('ROOT-UNKNOWN', 'tag: 0x%s ' % reader.read(1).hex())
 	LOGGER('ROOT-UNKNOWN', 'object ID: 0x%s ' % reader.read(4).hex())
 
@@ -438,9 +450,9 @@ def verify_CLASS_INSTANCE_FIELDS(reader, count):
 	return []
 
 
-def COUNTER(index):
+def COUNTER(key):
 	global counter
-	counter[index] += 1
+	counter.update({key: 1 + counter.get(key, 0)})
 
 
 def process(source):

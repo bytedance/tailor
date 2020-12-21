@@ -21,7 +21,7 @@ import argparse
 import os
 import zlib
 
-counter = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+counter = {}
 
 
 def decode(reader, writer):
@@ -64,7 +64,7 @@ def decode(reader, writer):
 
 
 def decode_STRING(reader, writer):
-	COUNTER(0)
+	COUNTER('STRING')
 	writer.write(bytearray([0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]))
 
 	length = int.from_bytes(reader.read(2), byteorder='big', signed=False)
@@ -74,7 +74,7 @@ def decode_STRING(reader, writer):
 
 
 def decode_LOAD_CLASS(reader, writer):
-	COUNTER(1)
+	COUNTER('LOAD_CLASS')
 	writer.write(bytearray([0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x00]))
 	writer.write(bytearray(reader.read(4)))
 	writer.write(bytearray(4))
@@ -82,7 +82,7 @@ def decode_LOAD_CLASS(reader, writer):
 
 
 def decode_HEAP_DUMP_SEGMENT(reader, writer):
-	COUNTER(3)
+	COUNTER('HEAP_DUMP_SEGMENT')
 	writer.write(bytearray([0x1C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]))
 
 	segment_started_index = writer.tell()
@@ -117,11 +117,11 @@ def decode_HEAP_DUMP_SEGMENT(reader, writer):
 		elif tag == 0x89:  # ROOT_INTERNED_STRING
 			decode_ROOT_INTERNED_STRING(reader, writer)
 		elif tag == 0x8A:  # ROOT_FINALIZING
-			raise Exception('decode_HEAP_DUMP_SEGMENT >>> Not supported tag: %d' % tag)
+			decode_ROOT_FINALIZING(reader, writer)
 		elif tag == 0x8B:  # ROOT_DEBUGGER
 			decode_ROOT_DEBUGGER(reader, writer)
 		elif tag == 0x8C:  # ROOT_REFERENCE_CLEANUP
-			raise Exception('decode_HEAP_DUMP_SEGMENT >>> Not supported tag: %d' % tag)
+			verify_ROOT_REFERENCE_CLEANUP(reader, writer)
 		elif tag == 0x8D:  # ROOT_VM_INTERNAL
 			decode_ROOT_VM_INTERNAL(reader, writer)
 		elif tag == 0x8E:  # ROOT_JNI_MONITOR
@@ -151,57 +151,57 @@ def decode_HEAP_DUMP_END(reader, writer):
 	writer.write(bytearray([0x2C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]))
 
 	global counter
-	print("counter: %s" % counter)
+	print(counter)
 	print('success: [%d/%d -> %d]' % (reader.tell(), os.path.getsize(reader.name), writer.tell()))
 
 
 def decode_ROOT_JNI_GLOBAL(reader, writer):
-	COUNTER(4)
+	COUNTER('ROOT_JNI_GLOBAL')
 	writer.write(bytearray(reader.read(9)))
 
 
 def decode_ROOT_JNI_LOCAL(reader, writer):
-	COUNTER(5)
+	COUNTER('ROOT_JNI_LOCAL')
 	writer.write(bytearray(reader.read(5)))
 	writer.write(bytearray(8))
 
 
 def decode_ROOT_JAVA_FRAME(reader, writer):
-	COUNTER(6)
+	COUNTER('ROOT_JAVA_FRAME')
 	writer.write(bytearray(reader.read(5)))
 	writer.write(bytearray(8))
 
 
 def decode_ROOT_NATIVE_STACK(reader, writer):
-	COUNTER(7)
+	COUNTER('ROOT_NATIVE_STACK')
 	writer.write(bytearray(reader.read(5)))
 	writer.write(bytearray(4))
 
 
 def decode_ROOT_STICKY_CLASS(reader, writer):
-	COUNTER(8)
+	COUNTER('ROOT_STICKY_CLASS')
 	writer.write(bytearray(reader.read(5)))
 
 
 def decode_ROOT_THREAD_BLOCK(reader, writer):
-	COUNTER(9)
+	COUNTER('ROOT_THREAD_BLOCK')
 	writer.write(bytearray(reader.read(5)))
 	writer.write(bytearray(4))
 
 
 def decode_ROOT_MONITOR_USED(reader, writer):
-	COUNTER(10)
+	COUNTER('ROOT_MONITOR_USED')
 	writer.write(bytearray(reader.read(5)))
 
 
 def decode_ROOT_THREAD_OBJECT(reader, writer):
-	COUNTER(11)
+	COUNTER('ROOT_THREAD_OBJECT')
 	writer.write(bytearray(reader.read(5)))
 	writer.write(bytearray(8))
 
 
 def decode_CLASS_DUMP(reader, writer):
-	COUNTER(12)
+	COUNTER('CLASS_DUMP')
 	writer.write(bytearray(reader.read(5)))
 
 	writer.write(bytearray(4))
@@ -229,7 +229,7 @@ def decode_CLASS_DUMP(reader, writer):
 
 
 def decode_INSTANCE_DUMP(reader, writer):
-	COUNTER(13)
+	COUNTER('INSTANCE_DUMP')
 	writer.write(bytearray(reader.read(5)))
 	writer.write(bytearray(4))
 	writer.write(bytearray(reader.read(4)))
@@ -240,7 +240,7 @@ def decode_INSTANCE_DUMP(reader, writer):
 
 
 def decode_OBJECT_ARRAY_DUMP(reader, writer):
-	COUNTER(14)
+	COUNTER('OBJECT_ARRAY_DUMP')
 	writer.write(bytearray(reader.read(5)))
 
 	writer.write(bytearray(4))
@@ -252,7 +252,7 @@ def decode_OBJECT_ARRAY_DUMP(reader, writer):
 
 
 def decode_PRIMITIVE_ARRAY_DUMP(reader, writer):
-	COUNTER(15)
+	COUNTER('PRIMITIVE_ARRAY_DUMP')
 	writer.write(bytearray(reader.read(5)))
 
 	writer.write(bytearray(4))
@@ -267,33 +267,43 @@ def decode_PRIMITIVE_ARRAY_DUMP(reader, writer):
 
 
 def decode_ROOT_INTERNED_STRING(reader, writer):
-	COUNTER(16)
+	COUNTER('ROOT_INTERNED_STRING')
+	writer.write(bytearray(reader.read(5)))
+
+
+def decode_ROOT_FINALIZING(reader, writer):
+	COUNTER('ROOT_FINALIZING')
 	writer.write(bytearray(reader.read(5)))
 
 
 def decode_ROOT_DEBUGGER(reader, writer):
-	COUNTER(17)
+	COUNTER('ROOT_DEBUGGER')
+	writer.write(bytearray(reader.read(5)))
+
+
+def verify_ROOT_REFERENCE_CLEANUP(reader, writer):
+	COUNTER('ROOT_REFERENCE_CLEANUP')
 	writer.write(bytearray(reader.read(5)))
 
 
 def decode_ROOT_VM_INTERNAL(reader, writer):
-	COUNTER(18)
+	COUNTER('ROOT_VM_INTERNAL')
 	writer.write(bytearray(reader.read(5)))
 
 
 def decode_ROOT_JNI_MONITOR(reader, writer):
-	COUNTER(19)
+	COUNTER('ROOT_JNI_MONITOR')
 	writer.write(bytearray(reader.read(5)))
 	writer.write(bytearray(8))
 
 
 def decode_HEAP_DUMP_INFO(reader, writer):
-	COUNTER(20)
+	COUNTER('HEAP_DUMP_INFO')
 	writer.write(bytearray(reader.read(9)))
 
 
 def decode_ROOT_UNKNOWN(reader, writer):
-	COUNTER(21)
+	COUNTER('ROOT_UNKNOWN')
 	writer.write(bytearray(reader.read(5)))
 
 
@@ -400,9 +410,9 @@ def decode_CLASS_INSTANCE_FIELDS(reader, count, writer):
 			writer.write(bytearray(reader.read(5)))
 
 
-def COUNTER(index):
+def COUNTER(key):
 	global counter
-	counter[index] += 1
+	counter.update({key: 1 + counter.get(key, 0)})
 
 
 def decompress(reader, writer):
