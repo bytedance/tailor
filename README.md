@@ -76,7 +76,7 @@ python3 library/src/main/python/decode.py -i mini.hprof -o target.hprof
 1. Communicate on [GitHub issues](https://github.com/bytedance/tailor/issues)
 2. Mail: <a href="mailto:shentianzhou.stz@gmail.com">shentianzhou.stz@gmail.com</a>
 3. WeChat: 429013449
-<p align="left"><img src="images/wechat.jpeg" alt="Wechat group" width="320px"></p>
+<p align="left"><img src="images/wechat.jpg" alt="Wechat group" width="320px"></p>
 
 ## License
 ~~~
