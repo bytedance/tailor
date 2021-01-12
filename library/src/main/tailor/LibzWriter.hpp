@@ -28,10 +28,10 @@ public:
     ~LibzWriter();
 public:
      int proxy(int flags);
-	void flush(char *buff, size_t bytes, bool isEof);
+    void flush(char *buff, size_t bytes, bool isEof);
 private:
-	z_stream stream;
-	char     output[LENGTH];
+    z_stream stream;
+    char     output[MAX_BUFFER_SIZE];
 };
 //**************************************************************************************************
 LibzWriter::LibzWriter(const char *path) {
@@ -58,9 +58,13 @@ LibzWriter::~LibzWriter() {
 }
 
 int LibzWriter::proxy(int flags) {
-    char proxy[256];
-    sprintf(proxy, "%s.proxy", name);
-    return wrap = open(proxy, flags);
+    char proxy[FILE_PATH_LIMIT];
+    int size = snprintf(proxy, FILE_PATH_LIMIT - 1, "%s.proxy", name);
+    if (size >= FILE_PATH_LIMIT) {
+        return wrap = -1;
+    } else {
+        return wrap = open(proxy, flags);
+    }
 }
 
 void LibzWriter::flush(char *buff, size_t count, bool isEof) {
@@ -68,13 +72,13 @@ void LibzWriter::flush(char *buff, size_t count, bool isEof) {
     stream.next_in = (Bytef *) buff;
 
     do {
-        stream.avail_out = LENGTH;
+        stream.avail_out = MAX_BUFFER_SIZE;
         stream.next_out = (Bytef *) output;
 
         if (Z_STREAM_ERROR == deflate(&stream, isEof ? Z_FINISH : Z_NO_FLUSH)) {
             return;
         } else {
-            fwrite(output, 1, LENGTH - stream.avail_out, target);
+            fwrite(output, 1, MAX_BUFFER_SIZE - stream.avail_out, target);
         }
     } while (this->stream.avail_out == 0);
 }

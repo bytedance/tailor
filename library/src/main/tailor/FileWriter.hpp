@@ -22,36 +22,40 @@
 //**************************************************************************************************
 class FileWriter : public Writer {
 public:
-	FileWriter(const char *name);
-	~FileWriter();
+    FileWriter(const char *name);
+    ~FileWriter();
 public:
      int proxy(int flags);
     void flush(char *buff, size_t bytes, bool isEof);
 };
 //**************************************************************************************************
 FileWriter::FileWriter(const char *path) {
-	name = path;
-	wrap = -1;
+    name = path;
+    wrap = -1;
 
     target = fopen(path, "w");
-	offset = 0;
+    offset = 0;
 }
 
 FileWriter::~FileWriter() {
-	fwrite(buffer, 1, offset, target);
-	offset = 0;
+    fwrite(buffer, 1, offset, target);
+    offset = 0;
 
-	fflush(target);
-	fclose(target);
-	target = nullptr;
+    fflush(target);
+    fclose(target);
+    target = nullptr;
 
-	if (wrap != -1) close(wrap);
+    if (wrap != -1) close(wrap);
 }
 
 int FileWriter::proxy(int flags) {
-    char proxy[256];
-    sprintf(proxy, "%s.proxy", name);
-    return (wrap = open(proxy, flags));
+    char proxy[FILE_PATH_LIMIT];
+    int size = snprintf(proxy, FILE_PATH_LIMIT - 1, "%s.proxy", name);
+    if (size >= FILE_PATH_LIMIT) {
+        return wrap = -1;
+    } else {
+        return wrap = open(proxy, flags);
+    }
 }
 
 void FileWriter::flush(char *buff, size_t bytes, bool isEof) {

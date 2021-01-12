@@ -19,69 +19,70 @@
 
 #include <stdlib.h>
 //**************************************************************************************************
-#define LENGTH 8 * 1024
+#define MAX_BUFFER_SIZE 8 * 1024
+#define FILE_PATH_LIMIT 256
 
 struct Reader {
-	virtual ~Reader() {}
-	virtual bool isAvailable() = 0;
+    virtual ~Reader() {}
+    virtual bool isAvailable() = 0;
 
-	char  *buffer;
-	size_t length;
-	size_t offset;
+    char  *buffer;
+    size_t length;
+    size_t offset;
 };
 
 struct Writer {
-	virtual ~Writer() {}
-	virtual  int proxy(int flags) = 0;
-	virtual void flush(char *buff, size_t bytes, bool isEof) = 0;
+    virtual ~Writer() {}
+    virtual  int proxy(int flags) = 0;
+    virtual void flush(char *buff, size_t bytes, bool isEof) = 0;
 
-	const char *name;
-	int wrap;
+    const char *name;
+    int wrap;
 
-	FILE  *target;
-	char   buffer[LENGTH];
-	size_t offset;
+    FILE  *target;
+    char   buffer[MAX_BUFFER_SIZE];
+    size_t offset;
 };
 //**************************************************************************************************
 inline void fill(Writer *writer, char value) {
-	if (writer->offset + 1 > LENGTH) {
-		writer->flush(writer->buffer, writer->offset, false);
-		writer->offset = 0;
-	}
+    if (writer->offset + 1 > MAX_BUFFER_SIZE) {
+        writer->flush(writer->buffer, writer->offset, false);
+        writer->offset = 0;
+    }
 
-	writer->buffer[writer->offset++] = value;
+    writer->buffer[writer->offset++] = value;
 }
 
 inline void fill(Writer *writer, char *array, size_t count) {
-	if (writer->offset + count > LENGTH) {
-		writer->flush(writer->buffer, writer->offset, false);
-		writer->offset = 0;
-	}
+    if (writer->offset + count > MAX_BUFFER_SIZE) {
+        writer->flush(writer->buffer, writer->offset, false);
+        writer->offset = 0;
+    }
 
-	for (int i = 0; i < count; i++) {
-		writer->buffer[writer->offset++] = array[i];
-	}
+    for (int i = 0; i < count; i++) {
+        writer->buffer[writer->offset++] = array[i];
+    }
 }
 
 inline void fill(Writer *writer, Reader *reader, size_t count) {
-	if (writer->offset + count > LENGTH) {
-		writer->flush(writer->buffer, writer->offset, false);
-		writer->offset = 0;
-	}
+    if (writer->offset + count > MAX_BUFFER_SIZE) {
+        writer->flush(writer->buffer, writer->offset, false);
+        writer->offset = 0;
+    }
 
-	for (int i = 0; i < count; i++) {
-		writer->buffer[writer->offset++] = reader->buffer[reader->offset++];
-	}
+    for (int i = 0; i < count; i++) {
+        writer->buffer[writer->offset++] = reader->buffer[reader->offset++];
+    }
 }
 
 inline void copy(Writer *writer, Reader *reader, size_t count) {
-	if (writer->offset > 0) {
-		writer->flush(writer->buffer, writer->offset, false);
-		writer->offset = 0;
-	}
+    if (writer->offset > 0) {
+        writer->flush(writer->buffer, writer->offset, false);
+        writer->offset = 0;
+    }
 
-	writer->flush(reader->buffer + reader->offset, count, false);
-	reader->offset += count;
+    writer->flush(reader->buffer + reader->offset, count, false);
+    reader->offset += count;
 }
 //**************************************************************************************************
 #endif //STREAM_H

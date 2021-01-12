@@ -7,8 +7,6 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
 
         externalNativeBuild {
             cmake {
@@ -37,7 +35,7 @@ android {
         userOrg = 'shentianzhou'
         groupId = 'com.bytedance.tailor'
         artifactId = 'library'
-        publishVersion = '1.0.2'
+        publishVersion = '1.0.3'
         desc = 'Tailor release'
         website = 'https://github.com/bytedance/tailor'
     }

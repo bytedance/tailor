@@ -21,25 +21,25 @@
 //**************************************************************************************************
 class ByteReader : public Reader {
 public:
-	ByteReader();
-	~ByteReader();
+    ByteReader();
+    ~ByteReader();
 public:
-	bool isAvailable();
+    bool isAvailable();
 };
 //**************************************************************************************************
 ByteReader::ByteReader() {
-	buffer = nullptr;
-	length = 0;
-	offset = 0;
+    buffer = nullptr;
+    length = 0;
+    offset = 0;
 }
 
 ByteReader::~ByteReader() {
-	buffer = nullptr;
-	length = 0;
-	offset = 0;
+    buffer = nullptr;
+    length = 0;
+    offset = 0;
 }
 
 bool ByteReader::isAvailable() {
-	return buffer != nullptr && length > offset;
+    return buffer != nullptr && length > offset;
 }
 #endif //BYTE_READER_H

@@ -22,36 +22,36 @@
 //**************************************************************************************************
 class FileReader : public Reader {
 public:
-	FileReader(const char *name);
-	~FileReader();
+    FileReader(const char *name);
+    ~FileReader();
 public:
-	bool isAvailable();
+    bool isAvailable();
 private:
-	FILE *source;
+    FILE *source;
 };
 //**************************************************************************************************
 FileReader::FileReader(const char *name) {
-	source = fopen(name, "r");
+    source = fopen(name, "r");
 
-	fseek(source, 0, SEEK_END);
-	length = ftell(source);
+    fseek(source, 0, SEEK_END);
+    length = ftell(source);
 
-	buffer = (char *) mmap(NULL, length, PROT_READ, MAP_SHARED, fileno(source), 0);
-	offset = 0;
+    buffer = (char *) mmap(NULL, length, PROT_READ, MAP_SHARED, fileno(source), 0);
+    offset = 0;
 }
 
 FileReader::~FileReader() {
-	fclose(source);
-	source = nullptr;
+    fclose(source);
+    source = nullptr;
 
-	munmap(buffer, length);
-	buffer = nullptr;
+    munmap(buffer, length);
+    buffer = nullptr;
 
-	length = 0;
-	offset = 0;
+    length = 0;
+    offset = 0;
 }
 
 bool FileReader::isAvailable() {
-	return buffer != nullptr && length > offset;
+    return buffer != nullptr && length > offset;
 }
 #endif //FILE_READER_H

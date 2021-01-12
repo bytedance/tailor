@@ -29,39 +29,39 @@ public class Tailor {
     }
 
     public static synchronized void dumpHprofData(String fileName, boolean isGzip) throws IOException {
-    	nOpen(fileName, isGzip);
-    	Debug.dumpHprofData(fileName);
-    	nClose();
-	}
+        nOpen(fileName, isGzip);
+        Debug.dumpHprofData(fileName);
+        nClose();
+    }
 
-	public static void cropHprofData(String source, String target, boolean isGzip) throws IOException {
-    	if (isHprofValid(source)) {
-    		nCrop(source, target, isGzip);
-		} else {
-    		throw new IOException("Bad hprof file " + source);
-		}
-	}
+    public static void cropHprofData(String source, String target, boolean isGzip) throws IOException {
+        if (isHprofValid(source)) {
+            nCrop(source, target, isGzip);
+        } else {
+            throw new IOException("Bad hprof file " + source);
+        }
+    }
 
-	public static boolean isHprofValid(String path) {
-		RandomAccessFile file = null;
-		try {
-			file = new RandomAccessFile(path, "r");
-			file.seek(file.length() - 9);
-			return file.readByte() == 0x2C;
-		} catch (Throwable t) {
-			return false;
-		} finally {
-			if (file != null) {
-				try {
-					file.close();
-				} catch (Throwable t) {
-					t.printStackTrace();
-				}
-			}
-		}
-	}
+    public static boolean isHprofValid(String path) {
+        RandomAccessFile file = null;
+        try {
+            file = new RandomAccessFile(path, "r");
+            file.seek(file.length() - 9);
+            return file.readByte() == 0x2C;
+        } catch (Throwable t) {
+            return false;
+        } finally {
+            if (file != null) {
+                try {
+                    file.close();
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                }
+            }
+        }
+    }
 
-	static native void nOpen(String target, boolean gzip);
+    static native void nOpen(String target, boolean gzip);
 
     static native void nClose();
 
