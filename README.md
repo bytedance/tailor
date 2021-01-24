@@ -13,7 +13,7 @@ complete, which is very suitable for offline analysis of oom and other exception
 
 ## Apps using Tailor
 
-| <img src="images/xigua.png" alt="xigua" width="100"/> | <img src="images/douyin.png" alt="douyin" width="100"/> | <img src="images/huoshan.png" alt="huoshan" width="100"/> | <img src="images/kaiyan.png" alt="kaiyan" width="100"/>
+| <img src="docs/xigua.png" alt="xigua" width="100"/> | <img src="docs/douyin.png" alt="douyin" width="100"/> | <img src="docs/huoshan.png" alt="huoshan" width="100"/> | <img src="docs/kaiyan.png" alt="kaiyan" width="100"/>
 |:-----------:|:-------:|:-------:|:-------:|
 | Xigua Video | Douyin  | Huoshan | Kaiyan  |
 
@@ -21,7 +21,7 @@ complete, which is very suitable for offline analysis of oom and other exception
 
 Step1: Add to your build.gradle
 ```gradle
-implementation 'com.bytedance.tailor:library:1.0.3'
+implementation 'com.bytedance.tailor:library:1.0.6'
 ```
 
 Step2: For simple usage
@@ -76,7 +76,7 @@ python3 library/src/main/python/decode.py -i mini.hprof -o target.hprof
 1. Communicate on [GitHub issues](https://github.com/bytedance/tailor/issues)
 2. Mail: <a href="mailto:shentianzhou.stz@gmail.com">shentianzhou.stz@gmail.com</a>
 3. WeChat: 429013449
-<p align="left"><img src="images/wechat.jpg" alt="Wechat group" width="320px"></p>
+<p align="left"><img src="docs/wechat.jpg" alt="Wechat group" width="320px"></p>
 
 ## License
 ~~~

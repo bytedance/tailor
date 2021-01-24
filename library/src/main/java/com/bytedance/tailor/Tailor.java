@@ -29,26 +29,26 @@ public class Tailor {
     }
 
     public static synchronized void dumpHprofData(String fileName, boolean isGzip) throws IOException {
-        nOpen(fileName, isGzip);
+        nOpenProxy(fileName, isGzip);
         Debug.dumpHprofData(fileName);
-        nClose();
+        nCloseProxy();
     }
 
     public static void cropHprofData(String source, String target, boolean isGzip) throws IOException {
         if (isHprofValid(source)) {
-            nCrop(source, target, isGzip);
+            nCropHprof(source, target, isGzip);
         } else {
             throw new IOException("Bad hprof file " + source);
         }
     }
 
-    public static boolean isHprofValid(String path) {
+    static boolean isHprofValid(String path) {
         RandomAccessFile file = null;
         try {
             file = new RandomAccessFile(path, "r");
             file.seek(file.length() - 9);
             return file.readByte() == 0x2C;
-        } catch (Throwable t) {
+        } catch (IOException e) {
             return false;
         } finally {
             if (file != null) {
@@ -61,9 +61,9 @@ public class Tailor {
         }
     }
 
-    static native void nOpen(String target, boolean gzip);
+    static native void nOpenProxy(String target, boolean gzip);
 
-    static native void nClose();
+    static native void nCloseProxy();
 
-    static native void nCrop(String source, String target, boolean gzip);
+    static native void nCropHprof(String source, String target, boolean gzip);
 }

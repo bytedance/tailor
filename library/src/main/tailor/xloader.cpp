@@ -83,7 +83,7 @@ int hook() {
     return state;
 }
 
-void open_tailor(JNIEnv* env, jobject obj, jstring name, jboolean gzip) {
+void Tailor_nOpenProxy(JNIEnv* env, jobject obj, jstring name, jboolean gzip) {
     target = -1;
     reader = new ByteReader();
     writer = createWriter(env->GetStringUTFChars(name, 0), gzip);
@@ -91,7 +91,7 @@ void open_tailor(JNIEnv* env, jobject obj, jstring name, jboolean gzip) {
     LOGGER(">>> open %s", ((0 == hook()) ? "success" : "failure"));
 }
 
-void close_tailor(JNIEnv* env, jobject obj) {
+void Tailor_nCloseProxy(JNIEnv *env, jobject obj) {
     delete reader;
     reader = nullptr;
 
@@ -101,7 +101,7 @@ void close_tailor(JNIEnv* env, jobject obj) {
     xh_core_clear();
 }
 
-void crop_hprof(JNIEnv* env, jobject obj, jstring source, jstring target, bool gzip) {
+void Tailor_nCropHprof(JNIEnv *env, jobject obj, jstring source, jstring target, bool gzip) {
     Writer *writer = createWriter(env->GetStringUTFChars(target, 0), gzip);
     fill(writer, const_cast<char *>(VERSION), 18);
 
@@ -113,17 +113,17 @@ void crop_hprof(JNIEnv* env, jobject obj, jstring source, jstring target, bool g
 
 static const JNINativeMethod sMethods[] = {
         {
-                "nOpen",
+                "nOpenProxy",
                 "(Ljava/lang/String;Z)V",
-                (void *) open_tailor
+                (void *) Tailor_nOpenProxy
         }, {
-                "nClose",
+                "nCloseProxy",
                 "()V",
-                (void *) close_tailor
+                (void *) Tailor_nCloseProxy
         }, {
-                "nCrop",
+                "nCropHprof",
                 "(Ljava/lang/String;Ljava/lang/String;Z)V",
-                (void *) crop_hprof
+                (void *) Tailor_nCropHprof
         }
 };
 

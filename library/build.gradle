@@ -35,7 +35,7 @@ android {
         userOrg = 'shentianzhou'
         groupId = 'com.bytedance.tailor'
         artifactId = 'library'
-        publishVersion = '1.0.3'
+        publishVersion = '1.0.6'
         desc = 'Tailor release'
         website = 'https://github.com/bytedance/tailor'
     }

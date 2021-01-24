@@ -39,10 +39,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String source = DIRECTORY + "/0.hprof";
             String target = DIRECTORY + "/1.hprof";
             Debug.dumpHprofData(source);
-            System.err.println("TAILOR: isHprofValid = " + Tailor.isHprofValid(source));
-            if (Tailor.isHprofValid(source)) {
-                Tailor.cropHprofData(source, target, true);
-            }
+            Tailor.cropHprofData(source, target, true);
         } catch (Exception e) {
             e.printStackTrace();
         }

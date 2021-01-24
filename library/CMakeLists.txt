@@ -18,7 +18,7 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Werror=return-type ")
 
 # Header file directories
 include_directories(
-        ${CMAKE_SOURCE_DIR}/src/main/pltgot
+        ${CMAKE_SOURCE_DIR}/src/main/xHook
 )
 
 add_library(
@@ -30,17 +30,17 @@ add_library(
 
         # Provides a relative path to your source file(s).
 
-        src/main/pltgot/xh_core.c
-        src/main/pltgot/xh_core.h
-        src/main/pltgot/xh_elf.c
-        src/main/pltgot/xh_elf.h
-        src/main/pltgot/xh_util.c
-        src/main/pltgot/xh_util.h
-        src/main/pltgot/xh_errno.h
-        src/main/pltgot/queue.h
-        src/main/pltgot/tree.h
-        src/main/pltgot/xh_log.h
-        src/main/pltgot/xh_log.c
+        src/main/xHook/xh_core.c
+        src/main/xHook/xh_core.h
+        src/main/xHook/xh_elf.c
+        src/main/xHook/xh_elf.h
+        src/main/xHook/xh_util.c
+        src/main/xHook/xh_util.h
+        src/main/xHook/xh_errno.h
+        src/main/xHook/queue.h
+        src/main/xHook/tree.h
+        src/main/xHook/xh_log.h
+        src/main/xHook/xh_log.c
 
         src/main/tailor/ByteReader.hpp
         src/main/tailor/FileReader.hpp

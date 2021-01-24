@@ -8,7 +8,7 @@ Tailor是西瓜Android团队开发的一款通用内存快照裁剪压缩工具�
 
 ## Apps using Tailor
 
-| <img src="images/xigua.png" alt="xigua" width="100"/> | <img src="images/douyin.png" alt="douyin" width="100"/> | <img src="images/huoshan.png" alt="huoshan" width="100"/> | <img src="images/kaiyan.png" alt="kaiyan" width="100"/>
+| <img src="docs/xigua.png" alt="xigua" width="100"/> | <img src="docs/douyin.png" alt="douyin" width="100"/> | <img src="docs/huoshan.png" alt="huoshan" width="100"/> | <img src="docs/kaiyan.png" alt="kaiyan" width="100"/>
 |:---------:|:-------:|:-------:|:-------:|
 |  西瓜视频  |   抖音   |   火山  | 开言英语  |
 
@@ -16,7 +16,7 @@ Tailor是西瓜Android团队开发的一款通用内存快照裁剪压缩工具�
 
 Step1 添加依赖：
 ```gradle
-implementation 'com.bytedance.tailor:library:1.0.3'
+implementation 'com.bytedance.tailor:library:1.0.6'
 ```
 
 Step2 代码接入：
@@ -69,7 +69,7 @@ python3 library/src/main/python/decode.py -i mini.hprof -o target.hprof
 1. 在[GitHub issues](https://github.com/bytedance/tailor/issues)上交流
 2. 邮件: <a href="mailto:shentianzhou.stz@gmail.com">shentianzhou.stz@gmail.com</a>
 3. 微信: 429013449
-<p align="left"><img src="images/wechat.jpg" alt="Wechat group" width="320px"></p>
+<p align="left"><img src="docs/wechat.jpg" alt="Wechat group" width="320px"></p>
 
 ## License
 ~~~
