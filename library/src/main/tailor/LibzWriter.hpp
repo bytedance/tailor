@@ -26,13 +26,15 @@ class LibzWriter : public Writer {
 public:
     LibzWriter(const char *name);
     ~LibzWriter();
+
 public:
-     int proxy(int flags);
+    int proxy(int flags, mode_t mode);
     void flush(char *buff, size_t bytes, bool isEof);
 private:
     z_stream stream;
-    char     output[MAX_BUFFER_SIZE];
+    char output[MAX_BUFFER_SIZE];
 };
+
 //**************************************************************************************************
 LibzWriter::LibzWriter(const char *path) {
     name = path;
@@ -57,13 +59,13 @@ LibzWriter::~LibzWriter() {
     target = nullptr;
 }
 
-int LibzWriter::proxy(int flags) {
+int LibzWriter::proxy(int flags, mode_t mode) {
     char proxy[FILE_PATH_LIMIT];
     int size = snprintf(proxy, FILE_PATH_LIMIT - 1, "%s.proxy", name);
     if (size >= FILE_PATH_LIMIT) {
         return wrap = -1;
     } else {
-        return wrap = open(proxy, flags);
+        return wrap = open(proxy, flags, mode);
     }
 }
 
@@ -82,4 +84,5 @@ void LibzWriter::flush(char *buff, size_t count, bool isEof) {
         }
     } while (this->stream.avail_out == 0);
 }
+
 #endif //LIBZ_WRITER_H

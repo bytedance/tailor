@@ -33,7 +33,7 @@ struct Reader {
 
 struct Writer {
     virtual ~Writer() {}
-    virtual  int proxy(int flags) = 0;
+    virtual  int proxy(int flags, mode_t mode) = 0;
     virtual void flush(char *buff, size_t bytes, bool isEof) = 0;
 
     const char *name;
