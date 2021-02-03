@@ -57,11 +57,11 @@ inline ssize_t handle(const char *buffer, size_t count) {
     return count;
 }
 
-int open_proxy(const char *path, int flags, ...) {
+int open_proxy(const char *path, int flags, mode_t mode) {
     if (writer != nullptr && strcmp(writer->name, path) == 0) {
-        return target = writer->proxy(flags);
+        return target = writer->proxy(flags, mode);
     } else {
-        return open(path, flags);
+        return open(path, flags, mode);
     }
 }
 
