@@ -21,7 +21,7 @@ complete, which is very suitable for offline analysis of oom and other exception
 
 Step1: Add to your build.gradle
 ```gradle
-implementation 'com.bytedance.tailor:library:1.0.6'
+implementation 'com.bytedance.tailor:library:1.0.7'
 ```
 
 Step2: For simple usage

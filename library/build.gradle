@@ -12,7 +12,6 @@ android {
             cmake {
                 abiFilters 'armeabi-v7a', 'arm64-v8a'
                 arguments "-DANDROID_ARM_MODE=arm", "-DANDROID_STL=c++_shared"
-//                cppFlags "-fsanitize=address -fno-omit-frame-pointer"
                 cppFlags "-fvisibility=hidden"
             }
         }
@@ -35,7 +34,7 @@ android {
         userOrg = 'shentianzhou'
         groupId = 'com.bytedance.tailor'
         artifactId = 'library'
-        publishVersion = '1.0.6'
+        publishVersion = '1.0.7'
         desc = 'Tailor release'
         website = 'https://github.com/bytedance/tailor'
     }
