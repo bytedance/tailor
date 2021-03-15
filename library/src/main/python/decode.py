@@ -417,10 +417,10 @@ def COUNTER(key):
 
 def decompress(reader, writer):
     instance = zlib.decompressobj()
-    buffer = reader.read(4096)
+    buffer = reader.read(1024*1024)
     while buffer:
         writer.write(instance.decompress(buffer))
-        buffer = reader.read(4096)
+        buffer = reader.read(1024*1024)
     writer.write(instance.flush())
 
 

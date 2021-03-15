@@ -46,7 +46,7 @@ LibzWriter::LibzWriter(const char *path) {
     stream.zalloc = Z_NULL;
     stream.zfree = Z_NULL;
     stream.opaque = Z_NULL;
-    deflateInit(&stream, 6);
+    deflateInit(&stream, Z_BEST_SPEED);
 }
 
 LibzWriter::~LibzWriter() {
