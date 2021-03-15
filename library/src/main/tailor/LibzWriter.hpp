@@ -34,7 +34,6 @@ private:
     z_stream stream;
     char output[MAX_BUFFER_SIZE];
 };
-
 //**************************************************************************************************
 LibzWriter::LibzWriter(const char *path) {
     name = path;
@@ -46,7 +45,7 @@ LibzWriter::LibzWriter(const char *path) {
     stream.zalloc = Z_NULL;
     stream.zfree = Z_NULL;
     stream.opaque = Z_NULL;
-    deflateInit(&stream, 6);
+    deflateInit(&stream, Z_BEST_SPEED);
 }
 
 LibzWriter::~LibzWriter() {
@@ -84,5 +83,4 @@ void LibzWriter::flush(char *buff, size_t count, bool isEof) {
         }
     } while (this->stream.avail_out == 0);
 }
-
 #endif //LIBZ_WRITER_H

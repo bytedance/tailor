@@ -417,21 +417,30 @@ def COUNTER(key):
 
 def decompress(reader, writer):
     instance = zlib.decompressobj()
-    buffer = reader.read(4096)
+    buffer = reader.read(1024 * 1024)
     while buffer:
-        writer.write(instance.decompress(buffer))
-        buffer = reader.read(4096)
+        try:
+            writer.write(instance.decompress(buffer))
+        except:
+            raise Exception('decompress failed')
+        buffer = reader.read(1024 * 1024)
     writer.write(instance.flush())
 
 
 def process(source, target):
+    reader = None
+
     try:
         reader = open(source, 'rb')
         writer = open('.tailor', 'wb')
         decompress(reader, writer)
         reader.close()
         writer.close()
+    except Exception as e:
+        print(e)
+        print('decompress failed at: %d/%d' % (reader.tell(), os.path.getsize(reader.name)))
 
+    try:
         reader = open('.tailor', 'rb')
         writer = open(target, 'wb')
         if reader.read(18).decode('ascii') == 'JAVA PROFILE 6.0.1':
@@ -442,6 +451,7 @@ def process(source, target):
         writer.close()
     except Exception as e:
         print(e)
+        print('decode failed at: %d/%d' % (reader.tell(), os.path.getsize(reader.name)))
 
 
 if __name__ == '__main__':
@@ -454,6 +464,6 @@ if __name__ == '__main__':
         raise Exception('ERROR: input file name should not be null, using -h or --help for detail')
     if not args.output:
         raise Exception('ERROR: output file name should not be null, using -h or --help for detail')
-    
+
     process(args.input, args.output)
 
