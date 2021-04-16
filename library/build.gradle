@@ -1,18 +1,17 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.novoda.bintray-release'
+apply plugin: 'com.github.dcendents.android-maven'
 
 android {
     compileSdkVersion 28
-
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 28
 
         externalNativeBuild {
             cmake {
+                cppFlags "-fvisibility=hidden"
                 abiFilters 'armeabi-v7a', 'arm64-v8a'
                 arguments "-DANDROID_ARM_MODE=arm", "-DANDROID_STL=c++_shared"
-                cppFlags "-fvisibility=hidden"
             }
         }
     }
@@ -24,19 +23,11 @@ android {
         }
     }
 
+    ndkVersion "21.4.7075529"
     externalNativeBuild {
         cmake {
             path 'CMakeLists.txt'
         }
-    }
-
-    publish {
-        userOrg = 'shentianzhou'
-        groupId = 'com.bytedance.tailor'
-        artifactId = 'library'
-        publishVersion = '1.0.8'
-        desc = 'Tailor release'
-        website = 'https://github.com/bytedance/tailor'
     }
 }
 

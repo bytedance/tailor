@@ -12,33 +12,35 @@ sensitive information in the file。More importantly, the file is small but the 
 complete, which is very suitable for offline analysis of oom and other exceptions
 
 ## Apps using Tailor
-
-| <img src="docs/xigua.png" alt="xigua" width="100"/> | <img src="docs/douyin.png" alt="douyin" width="100"/> | <img src="docs/huoshan.png" alt="huoshan" width="100"/> | <img src="docs/kaiyan.png" alt="kaiyan" width="100"/>
-|:-----------:|:-------:|:-------:|:-------:|
-| Xigua Video | Douyin  | Huoshan | Kaiyan  |
+<img src="docs/xigua.png" width="100"/><img src="docs/douyin.png" width="100"/><img src="docs/huoshan.png" width="100"/><img src="docs/kaiyan.png" width="100"/>
 
 ## Get started
-
-Step1: Add to your build.gradle
+Step 1: Add the JitPack repository to your build file
 ```gradle
-implementation 'com.bytedance.tailor:library:1.0.8'
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}
 ```
 
-Step2: For simple usage
+Step 2: Add the dependency
+```gradle
+dependencies {
+    implementation 'com.github.bytedance:tailor:1.0.9'
+}
+```
 
-```java
-// Using Tailor to get a mini hprof file in exception callback
-Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-    @Override
-    public void uncaughtException(Thread t, Throwable e) {
-        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "mini.hprof";
-        try {
-            Tailor.dumpHprofData(path, true);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+Step 3: Add code for simple usage
+```Java
+if (e instanceof java.lang.OutOfMemoryError) {
+    String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "mini.hprof";
+    try {
+        Tailor.dumpHprofData(path, true);
+    } catch (IOException ex) {
+        ex.printStackTrace();
     }
-})
+}
 ```
 
 ```Java
@@ -46,33 +48,33 @@ Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() 
 Tailor.cropHprofData(source, target, true);
 ```
 
-Step3: File upload
+Step 4: Upload data
 ```shell
-App needs to implement upload logic by itself
+## !!! App needs to implement upload logic by itself
 ```
 
-Step4: Data recovery(Python version 3.5 and above)
+Step 5: Process data (Python version >= 3.5)
 ```shell
+## Data recovery
 python3 library/src/main/python/decode.py -i mini.hprof -o target.hprof
+```
+
+```shell
+## Hprof verify
+python3 library/src/main/python/verify.py -i source.hprof
+```
+
+```shell
+## Crop and compress
+python3 library/src/main/python/encode.py -i source.hprof -o mini.hprof
 ```
 
 ## Extra
+1. [Android Camera内存问题剖析](https://mp.weixin.qq.com/s/-oaN-bOqHDjN30UP1FMpgA)
+2. [西瓜视频稳定性治理体系建设一：Tailor 原理及实践](https://mp.weixin.qq.com/s/DWOQ9MSTkKSCBFQjPswPIQ)
+3. [西瓜视频稳定性治理体系建设二：Raphael 原理及实践](https://mp.weixin.qq.com/s/RF3m9_v5bYTYbwY-d1RloQ)
 
-In order to facilitate everyone to understand the file format of the hprof and the details of cropping
-and compression, we provide three script implementations (Python version 3.5 and above)
-
-```shell
-// Hprof verify
-python3 library/src/main/python/verify.py -i source.hprof
-
-// Crop and compress
-python3 library/src/main/python/encode.py -i source.hprof -o mini.hprof
-
-// Data recovery
-python3 library/src/main/python/decode.py -i mini.hprof -o target.hprof
-```
 ## Support
-
 1. Communicate on [GitHub issues](https://github.com/bytedance/tailor/issues)
 2. Mail: <a href="mailto:shentianzhou.stz@gmail.com">shentianzhou.stz@gmail.com</a>
 3. WeChat: 429013449

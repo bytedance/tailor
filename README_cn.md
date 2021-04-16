@@ -7,32 +7,36 @@ Tailor是西瓜Android团队开发的一款通用内存快照裁剪压缩工具�
 有任何敏感信息，更重要的是文件非常小的同时数据也相对完整，非常适合离线分析OOM及其他类型异常的调查定位。
 
 ## Apps using Tailor
-
-| <img src="docs/xigua.png" alt="xigua" width="100"/> | <img src="docs/douyin.png" alt="douyin" width="100"/> | <img src="docs/huoshan.png" alt="huoshan" width="100"/> | <img src="docs/kaiyan.png" alt="kaiyan" width="100"/>
-|:---------:|:-------:|:-------:|:-------:|
-|  西瓜视频  |   抖音   |   火山  | 开言英语  |
+<img src="docs/xigua.png" width="100"/><img src="docs/douyin.png" width="100"/><img src="docs/huoshan.png" width="100"/><img src="docs/kaiyan.png" width="100"/>
 
 ## Get started
-
-Step1 添加依赖：
+Step 1: Add the JitPack repository to your build file
 ```gradle
-implementation 'com.bytedance.tailor:library:1.0.8'
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}
 ```
 
-Step2 代码接入：
+Step 2: Add the dependency
+```gradle
+dependencies {
+    implementation 'com.github.bytedance:tailor:1.0.9'
+}
+```
+
+Step 3: Add code for simple usage
 ```Java
-// 在异常回调里通过Tailor获取快照，不同的app异常回调接口不同，可以根据app的实际情况调整，Ex：
-Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-    @Override
-    public void uncaughtException(Thread t, Throwable e) {
-        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "mini.hprof";
-        try {
-            Tailor.dumpHprofData(path, true);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+// 在异常回调里通过 Tailor 获取快照
+if (e instanceof java.lang.OutOfMemoryError) {
+    String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "mini.hprof";
+    try {
+        Tailor.dumpHprofData(path, true);
+    } catch (IOException ex) {
+        ex.printStackTrace();
     }
-})
+}
 ```
 
 ```Java
@@ -40,32 +44,34 @@ Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() 
 Tailor.cropHprofData(source, target, true);
 ```
 
-Step3 数据上传：
+Step 4: Upload data
 ```shell
-应用需自己实现上传逻辑或相应的数据回捞功能
+## !!! 应用需自己实现数据上传或回捞
 ```
 
-Step4 数据还原：
+Step 5: Process data (Python version 3.5以上)
 ```shell
-// 还原快照文件（Python version 3.5以上）
+## 还原数据, target.hprof 可通过 Android Studio 分析，通过 MAT 还需要 hprof-conv 转换
 python3 library/src/main/python/decode.py -i mini.hprof -o target.hprof
+```
+
+```shell
+## 解析验证
+python3 library/src/main/python/verify.py -i source.hprof
+```
+
+```shell
+## 裁剪压缩
+python3 library/src/main/python/encode.py -i source.hprof -o mini.hprof
 ```
 
 ## Extra
+1. [Android Camera内存问题剖析](https://mp.weixin.qq.com/s/-oaN-bOqHDjN30UP1FMpgA)
+2. [西瓜视频稳定性治理体系建设一：Tailor 原理及实践](https://mp.weixin.qq.com/s/DWOQ9MSTkKSCBFQjPswPIQ)
+3. [西瓜视频稳定性治理体系建设二：Raphael 原理及实践](https://mp.weixin.qq.com/s/RF3m9_v5bYTYbwY-d1RloQ)
 
-为了方便大家理解内存快照的文件格式及裁剪压缩细节，我们提供了三个脚本实现（Python version 3.5以上）
-```shell
-// 解析验证
-python3 library/src/main/python/verify.py -i source.hprof
 
-// 裁剪压缩
-python3 library/src/main/python/encode.py -i source.hprof -o mini.hprof
-
-// 数据还原
-python3 library/src/main/python/decode.py -i mini.hprof -o target.hprof
-```
 ## Support
-
 1. 在[GitHub issues](https://github.com/bytedance/tailor/issues)上交流
 2. 邮件: <a href="mailto:shentianzhou.stz@gmail.com">shentianzhou.stz@gmail.com</a>
 3. 微信: 429013449
