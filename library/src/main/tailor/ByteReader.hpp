@@ -15,7 +15,7 @@
  */
 
 #ifndef BYTE_READER_H
-#define BYTE_READER_H 1
+#define BYTE_READER_H
 
 #include "stream.hpp"
 //**************************************************************************************************

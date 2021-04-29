@@ -27,7 +27,7 @@ allprojects {
 Step 2: Add the dependency
 ```gradle
 dependencies {
-    implementation 'com.github.bytedance:tailor:1.0.9'
+    implementation 'com.github.bytedance:tailor:1.1.0'
 }
 ```
 
@@ -78,7 +78,8 @@ python3 library/src/main/python/encode.py -i source.hprof -o mini.hprof
 1. Communicate on [GitHub issues](https://github.com/bytedance/tailor/issues)
 2. Mail: <a href="mailto:shentianzhou.stz@gmail.com">shentianzhou.stz@gmail.com</a>
 3. WeChat: 429013449
-<p align="left"><img src="docs/wechat.jpg" alt="Wechat group" width="320px"></p>
+4. QQ Group
+<p align="left"><img src="docs/qqgroup.jpg" alt="QQ Group" width="320px"></p>
 
 ## License
 ~~~

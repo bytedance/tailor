@@ -15,7 +15,7 @@
  */
 
 #ifndef TAILOR_H
-#define TAILOR_H 1
+#define TAILOR_H
 
 #include <stdlib.h>
 #include "stream.hpp"

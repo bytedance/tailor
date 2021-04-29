@@ -15,7 +15,7 @@
  */
 
 #ifndef FILE_WRITER_H
-#define FILE_WRITER_H 1
+#define FILE_WRITER_H
 
 #include <unistd.h>
 #include "stream.hpp"
@@ -50,8 +50,7 @@ FileWriter::~FileWriter() {
 
 int FileWriter::proxy(int flags, mode_t mode) {
     char proxy[FILE_PATH_LIMIT];
-    int size = snprintf(proxy, FILE_PATH_LIMIT - 1, "%s.proxy", name);
-    if (size >= FILE_PATH_LIMIT) {
+    if (snprintf(proxy, FILE_PATH_LIMIT, "%s.proxy", name) >= FILE_PATH_LIMIT) {
         return wrap = -1;
     } else {
         return wrap = open(proxy, flags, mode);

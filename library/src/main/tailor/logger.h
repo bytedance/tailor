@@ -15,7 +15,7 @@
  */
 
 #ifndef LOGGER_H
-#define LOGGER_H 1
+#define LOGGER_H
 
 #include <android/log.h>
 /***************************************************************************************************/
