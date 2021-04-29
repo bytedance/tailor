@@ -15,7 +15,7 @@
  */
 
 #ifndef LIBZ_WRITER_H
-#define LIBZ_WRITER_H 1
+#define LIBZ_WRITER_H
 
 #include <unistd.h>
 #include <string.h>

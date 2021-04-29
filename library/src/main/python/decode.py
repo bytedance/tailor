@@ -437,8 +437,7 @@ def process(source, target):
         reader.close()
         writer.close()
     except Exception as e:
-        print(e)
-        print('decompress failed at: %d/%d' % (reader.tell(), os.path.getsize(reader.name)))
+        raise Exception('decompress failed at %d/%d: %s' % (reader.tell(), os.path.getsize(reader.name), str(e)))
 
     try:
         reader = open('.tailor', 'rb')
@@ -446,12 +445,11 @@ def process(source, target):
         if reader.read(18).decode('ascii') == 'JAVA PROFILE 6.0.1':
             decode(reader, writer)
         else:
-            raise Exception('decode failed, unknown file format !')
+            raise Exception('unknown file format!')
         reader.close()
         writer.close()
     except Exception as e:
-        print(e)
-        print('decode failed at: %d/%d' % (reader.tell(), os.path.getsize(reader.name)))
+        raise Exception('decode failed at %d/%d: %s' % (reader.tell(), os.path.getsize(reader.name), str(e)))
 
 
 if __name__ == '__main__':

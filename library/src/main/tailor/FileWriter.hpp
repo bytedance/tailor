@@ -15,7 +15,7 @@
  */
 
 #ifndef FILE_WRITER_H
-#define FILE_WRITER_H 1
+#define FILE_WRITER_H
 
 #include <unistd.h>
 #include "stream.hpp"

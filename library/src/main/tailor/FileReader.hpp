@@ -15,7 +15,7 @@
  */
 
 #ifndef FILE_READER_H
-#define FILE_READER_H 1
+#define FILE_READER_H
 
 #include "stream.hpp"
 #include <sys/mman.h>

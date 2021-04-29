@@ -38,7 +38,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         try {
             String source = DIRECTORY + "/0.hprof";
             String target = DIRECTORY + "/1.hprof";
+            long t = System.currentTimeMillis();
             Debug.dumpHprofData(source);
+            System.err.println(">>>>>>>> tailor_for_file: " + (System.currentTimeMillis() - t));
             Tailor.cropHprofData(source, target, true);
         } catch (Exception e) {
             e.printStackTrace();
@@ -48,7 +50,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     void tailor_for_hook() {
         String target = DIRECTORY + "/2.hprof";
         try {
-            Tailor.dumpHprofData(target, true);
+            long t = System.currentTimeMillis();
+            Tailor.dumpHprofData(target, false);
+            System.err.println(">>>>>>>> tailor_for_hook: " + (System.currentTimeMillis() - t));
         } catch (Exception e) {
             e.printStackTrace();
         }
