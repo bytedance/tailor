@@ -33,11 +33,18 @@ FileWriter::FileWriter(const char *path) {
     name = path;
     wrap = -1;
 
-    target = fopen(path, "w");
     offset = 0;
+    target = fopen(path, "w");
+    if (target == nullptr) {
+        LOGGER(">>> open %s failed", path);
+    }
 }
 
 FileWriter::~FileWriter() {
+    if (target == nullptr) {
+        return;
+    }
+
     fwrite(buffer, 1, offset, target);
     offset = 0;
 
@@ -45,12 +52,14 @@ FileWriter::~FileWriter() {
     fclose(target);
     target = nullptr;
 
-    if (wrap != -1) close(wrap);
+    if (wrap != -1) {
+        close(wrap);
+    }
 }
 
 int FileWriter::proxy(int flags, mode_t mode) {
     char proxy[FILE_PATH_LIMIT];
-    if (snprintf(proxy, FILE_PATH_LIMIT, "%s.proxy", name) >= FILE_PATH_LIMIT) {
+    if (target == nullptr || snprintf(proxy, FILE_PATH_LIMIT, "%s.proxy", name) >= FILE_PATH_LIMIT) {
         return wrap = -1;
     } else {
         return wrap = open(proxy, flags, mode);

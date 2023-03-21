@@ -20,6 +20,8 @@
 #include <unistd.h>
 #include <string.h>
 #include <zlib.h>
+
+#include "logger.h"
 #include "stream.hpp"
 //**************************************************************************************************
 class LibzWriter : public Writer {
@@ -39,8 +41,12 @@ LibzWriter::LibzWriter(const char *path) {
     name = path;
     wrap = -1;
 
-    target = fopen(path, "w");
     offset = 0;
+    target = fopen(path, "w");
+    if (target == nullptr) {
+        LOGGER(">>> open %s failed", path);
+        return;
+    }
 
     stream.zalloc = Z_NULL;
     stream.zfree = Z_NULL;
@@ -49,6 +55,10 @@ LibzWriter::LibzWriter(const char *path) {
 }
 
 LibzWriter::~LibzWriter() {
+    if (target == nullptr) {
+        return;
+    }
+
     flush(buffer, offset, true);
     offset = 0;
     deflateEnd(&stream);
@@ -56,11 +66,15 @@ LibzWriter::~LibzWriter() {
     fflush(target);
     fclose(target);
     target = nullptr;
+
+    if (wrap != -1) {
+        close(wrap);
+    }
 }
 
 int LibzWriter::proxy(int flags, mode_t mode) {
     char proxy[FILE_PATH_LIMIT];
-    if (snprintf(proxy, FILE_PATH_LIMIT, "%s.proxy", name) >= FILE_PATH_LIMIT) {
+    if (target == nullptr || snprintf(proxy, FILE_PATH_LIMIT, "%s.proxy", name) >= FILE_PATH_LIMIT) {
         return wrap = -1;
     } else {
         return wrap = open(proxy, flags, mode);
