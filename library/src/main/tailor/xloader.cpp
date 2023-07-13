@@ -109,6 +109,7 @@ void Tailor_nCropHprof(JNIEnv *env, jobject obj, jstring source, jstring target,
     while (reader->isAvailable() && handle(reader, writer) == 0);
 
     delete writer;
+    delete reader;
 }
 
 static const JNINativeMethod sMethods[] = {
